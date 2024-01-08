@@ -44,7 +44,10 @@ void *recvMsg(void *data)
             if (c->index == select_client)
             {
                 cout << c->index << " | message sent!\n";
-                send(c->sockfd, message.c_str(), strlen(message.c_str()), 0);
+                if (message.substr(1) == "helo")
+                    send(c->sockfd, "message.c_str()", strlen("message.c_str()"), 0);
+                else
+                    send(c->sockfd, message.c_str(), strlen(message.c_str()), 0);
             }
         }
         memset(buffer, 0, sizeof(buffer));
@@ -52,8 +55,8 @@ void *recvMsg(void *data)
         // if message received is "file",
         if (message.substr(1).compare("file") == 0)
         {
-            //string filename = receiveFile(connfd);
-            //cout << "File incoming > " << filename << endl;
+            // string filename = receiveFile(connfd);
+            // cout << "File incoming > " << filename << endl;
             for (client *c : clients)
             {
                 if (c->index == select_client)

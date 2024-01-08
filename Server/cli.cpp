@@ -103,7 +103,7 @@ int main()
 			sendFile(filename, fd);
 			// pass it into the send file function
 
-			close(fd);
+			//close(fd);
 		}
 		else
 		////////////////////////

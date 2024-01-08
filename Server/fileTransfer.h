@@ -29,6 +29,7 @@ void sendFile(const string &filePath, int clientSocket)
     }
 
     cout << "File sent successfully: " << filePath << endl;
+    shutdown(clientSocket, 1);
 }
 
 string receiveFile(int clientSocket)
@@ -61,7 +62,7 @@ string receiveFile(int clientSocket)
         file.write(buffer, bytesRead);
     }
 
-    close(clientSocket);
+    //close(clientSocket);
 
     if (bytesRead < 0)
     {
@@ -72,6 +73,7 @@ string receiveFile(int clientSocket)
     cout << "File received successfully: " << fileName << endl;
     return fileName;
 }
+
 void forwardFile(int senderSocket, int recieverSocket)
 {
     sendFile(receiveFile(recieverSocket), senderSocket);
