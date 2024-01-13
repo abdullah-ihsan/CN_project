@@ -8,10 +8,19 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
+#include <unordered_map>
 
 #include "fileTransfer.h"
+#include <vector>
 
 using namespace std;
+
+vector<client *> clientTable;
+
+void deserializeMyStruct(const char *buffer, client &data)
+{
+	std::memcpy(&data, buffer, sizeof(client));
+}
 
 void *recvMsg(void *socket)
 {
@@ -34,12 +43,54 @@ void *recvMsg(void *socket)
 				else
 					cout << "\nMessage from Client " << cliID << " : " << message << endl;
 			}
+			else if (message[0] == '~')
+			{
+			}
 			else
 				cout << "\nMessage from Server: " << message << endl;
 			memset(&buffer, 0, sizeof(buffer));
 		}
 	}
 }
+
+/* void *getClientInfo(void *socket)
+{
+	int64_t fd = (long)socket;
+	size_t totalSize;
+	recv(fd, &totalSize, sizeof(size_t), 0);
+	char *buffer = new char[totalSize];
+	while (1)
+	{
+		while (recv(fd, buffer, sizeof(client), 0) > 0)
+		{
+			client receivedData;
+			memcpy(&receivedData, buffer, sizeof(client));
+			vector<client *> receivedClients;
+			size_t offset = 0;
+			while (offset < totalSize)
+			{
+				client *element;
+				deserializeMyStruct(buffer + offset, *element);
+				receivedClients.push_back(element);
+				offset += sizeof(client);
+				cout << "c";
+			}
+			delete[] buffer;
+
+			// receivedClients contains vector of all clients
+			clientTable.clear();
+			clientTable = receivedClients;
+
+			cout << "Client Table: \n";
+
+			for (client *c : clientTable)
+			{
+				cout << "Client Number " << c->index << endl
+					 << "Client fd: " << c->sockfd << endl;
+			}
+		}
+	}
+} */
 
 int main()
 {
@@ -62,10 +113,19 @@ int main()
 		exit(-1);
 	}
 
+	// connection established
+
+	// make this client's data
+
+	// client will send the client info to the server
+
+	/* 	pthread_t clientTableThread;
+		pthread_create(&clientTableThread, NULL, getClientInfo, (void *)fd); */
+
 	char buffer[999];
 
-	pthread_t thread;
-	pthread_create(&thread, NULL, recvMsg, (void *)fd);
+	pthread_t recvThread;
+	pthread_create(&recvThread, NULL, recvMsg, (void *)fd);
 
 	// loop for sending message
 	while (1)
@@ -99,15 +159,16 @@ int main()
 			cout << "Enter file name > ";
 			char filename[100];
 			cin.getline(filename, 100);
-
 			sendFile(filename, fd);
 			// pass it into the send file function
 
-			//close(fd);
+			// shutdown(fd, 1);
+			// close(fd);
 		}
 		else
 		////////////////////////
 		{
+			cout << "sending " << buffer << endl; 
 			send(fd, message.c_str(), strlen(message.c_str()), 0);
 		}
 	}

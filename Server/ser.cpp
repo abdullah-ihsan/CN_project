@@ -13,17 +13,14 @@
 
 using namespace std;
 
-struct client
-{
-    int index;
-    int sockfd;
-    struct sockaddr_in addr;
-    pthread_t thread;
-};
-
 int client_index = 0;
 
 vector<client *> clients;
+
+void serializeMyStruct(const client &data, char *buffer)
+{
+    std::memcpy(buffer, &data, sizeof(client));
+}
 
 void *recvMsg(void *data)
 {
@@ -57,6 +54,7 @@ void *recvMsg(void *data)
         {
             // string filename = receiveFile(connfd);
             // cout << "File incoming > " << filename << endl;
+
             for (client *c : clients)
             {
                 if (c->index == select_client)
@@ -148,6 +146,35 @@ int main()
         // Add the client to the vector
         clients.push_back(clientData);
         client_index++;
+        /*
+                // getting total size of the client vector and serializing it
+                size_t totalSize = clients.size() * sizeof(client);
+                // Allocate memory for serializedClients before the loop
+                char *serializedClients = new char[totalSize];
+
+                // Serialize the clients
+                size_t offset = 0;
+                for (const client *element : clients)
+                {
+                    serializeMyStruct(*element, serializedClients + offset);
+                    offset += sizeof(client);
+                }
+
+                // sending clientTable to all clients
+                for (client *c : clients)
+                {
+                    // Send the total size and the serialized data
+                    if (c->index != client_index)
+                    {
+                        send(c->sockfd, &totalSize, sizeof(size_t), 0);
+                        send(c->sockfd, serializedClients, totalSize, 0);
+                    }
+                }
+
+                // Deallocate memory for serializedClients
+                delete[] serializedClients;
+
+                cout << "Client info broadcasted\n"; */
 
         // recv message thread
         pthread_t recv_thread;

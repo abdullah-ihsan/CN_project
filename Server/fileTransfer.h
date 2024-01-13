@@ -8,6 +8,14 @@
 
 using namespace std;
 
+struct client
+{
+    int index;               // client number (index + 1)
+    int sockfd;              // client socket
+    struct sockaddr_in addr; // client address
+    // pthread_t thread;
+};
+
 void sendFile(const string &filePath, int clientSocket)
 {
     // Send file metadata (filename)
@@ -29,7 +37,8 @@ void sendFile(const string &filePath, int clientSocket)
     }
 
     cout << "File sent successfully: " << filePath << endl;
-    shutdown(clientSocket, 1);
+    // close(clientSocket);
+    // shutdown(clientSocket, 1);
 }
 
 string receiveFile(int clientSocket)
@@ -56,13 +65,20 @@ string receiveFile(int clientSocket)
     int bytesRead;
 
     cout << "\n-> about to run the loop\n";
-    while ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0)
+    /* while ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0)
     {
         cout << bytesRead << ' '; // Indicate progress - you may remove this in production
         file.write(buffer, bytesRead);
-    }
+    } */
 
-    //close(clientSocket);
+    do
+    {
+        bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+        // cout << bytesRead << ' '; 
+        file.write(buffer, bytesRead);
+    } while (bytesRead == 1000);
+
+    // close(clientSocket);
 
     if (bytesRead < 0)
     {
