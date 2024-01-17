@@ -13,6 +13,7 @@ struct client
     int index;               // client number (index + 1)
     int sockfd;              // client socket
     struct sockaddr_in addr; // client address
+    int sockfd_file_transfer;
     // pthread_t thread;
 };
 
@@ -64,7 +65,7 @@ string receiveFile(int clientSocket)
     char buffer[1000];
     int bytesRead;
 
-    cout << "\n-> about to run the loop\n";
+    // cout << "\n-> about to run the loop\n";
     /* while ((bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0)) > 0)
     {
         cout << bytesRead << ' '; // Indicate progress - you may remove this in production
