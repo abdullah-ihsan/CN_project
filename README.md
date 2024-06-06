@@ -3,6 +3,28 @@
 The project uses TCP sockets to handle communication between different clients connected to the server. The project file contains cli.cpp and ser.cpp, along with the fileTransfer.h header file for functions responsible for file transferring. The messages are sent in a P2P model and the files through a server. Every client has its own directory containing files. Files transfer has been handled using fstream. Duplex chat is being handled by pthread_t.
 
 
+## How to use
+1. First, clone the repository to your system and change directory:
+```zsh
+git clone https://github.com/abdullah-ihsan/Multi-Party-Chat-and-File-Sharing-using-C-
+```
+```zsh
+cd Multi-Party-Chat-and-File-Sharing-using-C-
+cd Server
+```
+
+2. Open at least two instances of the terminal, one for the server and the rest for clients (max 4 clients)
+3. First start the server using the following command
+
+  ```zsh
+  sudo ./server
+  ```
+  and the client with this command
+  ```zsh
+  sudo ./client
+  ```
+
+  
 ![image](https://github.com/abdullah-ihsan/Multi-Party-Chat-and-File-Sharing-using-C-/assets/65601738/b82da6c5-70c7-48bc-bcee-96ce4aa6b912)
 Every client contains an executable and other files available to transfer.
 
